@@ -58,7 +58,6 @@ jobs:
 
       - name: Run judge
         if: steps.edited.outputs.edited == 'true'
-        if: steps.compile.outcome == 'success'
         shell: bash
         run: |
           python3 <<'PY'
