@@ -189,14 +189,15 @@ jobs:
               f.write(svg)
           PY
 
-          echo "## Judge Result" >> "$GITHUB_STEP_SUMMARY"
-          echo "
-Result: **$RESULT**
-" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          cat judge_detail.txt >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-
+          {
+            echo "## Judge Result"
+            echo
+            echo "Result: **$RESULT**"
+            echo
+            echo '```'
+            cat judge_detail.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Commit badge and result
         shell: bash
         run: |
