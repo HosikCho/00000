@@ -166,25 +166,25 @@ jobs:
           right_w = width - left_w
           mid_left = left_w // 2
           mid_right = left_w + right_w // 2
-          svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="20" role="img" aria-label="judge: {html.escape(right)}">
-  <title>judge: {html.escape(right)}</title>
-  <linearGradient id="s" x2="0" y2="100%">
-    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
-    <stop offset="1" stop-opacity=".1"/>
-  </linearGradient>
-  <clipPath id="r"><rect width="{width}" height="20" rx="3" fill="#fff"/></clipPath>
-  <g clip-path="url(#r)">
-    <rect width="{left_w}" height="20" fill="#555"/>
-    <rect x="{left_w}" width="{right_w}" height="20" fill="{color}"/>
-    <rect width="{width}" height="20" fill="url(#s)"/>
-  </g>
-  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11">
-    <text x="{mid_left}" y="15" fill="#010101" fill-opacity=".3">{left}</text>
-    <text x="{mid_left}" y="14">{left}</text>
-    <text x="{mid_right}" y="15" fill="#010101" fill-opacity=".3">{html.escape(right)}</text>
-    <text x="{mid_right}" y="14">{html.escape(right)}</text>
-  </g>
-</svg>'''
+          svg = f"""<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"{width}\" height=\"20\" role=\"img\" aria-label=\"judge: {html.escape(right)}\">
+          <title>judge: {html.escape(right)}</title>
+          <linearGradient id=\"s\" x2=\"0\" y2=\"100%\">
+            <stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/>
+            <stop offset=\"1\" stop-opacity=\".1\"/>
+          </linearGradient>
+          <clipPath id=\"r\"><rect width=\"{width}\" height=\"20\" rx=\"3\" fill=\"#fff\"/></clipPath>
+          <g clip-path=\"url(#r)\">
+            <rect width=\"{left_w}\" height=\"20\" fill=\"#555\"/>
+            <rect x=\"{left_w}\" width=\"{right_w}\" height=\"20\" fill=\"{color}\"/>
+            <rect width=\"{width}\" height=\"20\" fill=\"url(#s)\"/>
+          </g>
+          <g fill=\"#fff\" text-anchor=\"middle\" font-family=\"Verdana,Geneva,DejaVu Sans,sans-serif\" font-size=\"11\">
+            <text x=\"{mid_left}\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">{left}</text>
+            <text x=\"{mid_left}\" y=\"14\">{left}</text>
+            <text x=\"{mid_right}\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">{html.escape(right)}</text>
+            <text x=\"{mid_right}\" y=\"14\">{html.escape(right)}</text>
+          </g>
+          </svg>"""
           with open("badge.svg", "w", encoding="utf-8") as f:
               f.write(svg)
           PY
