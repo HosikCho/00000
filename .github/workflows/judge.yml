@@ -2,7 +2,9 @@ name: Judge
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
+    paths:
+      - 'solution.cpp'
   workflow_dispatch:
 
 permissions:
@@ -21,7 +23,25 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check whether solution was actually edited
+        id: edited
+        shell: bash
+        run: |
+          if cmp -s solution.cpp do_not_modify.cpp; then
+            echo "edited=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "edited=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stop if still skeleton
+        if: steps.edited.outputs.edited != 'true'
+        shell: bash
+        run: |
+          echo "solution.cpp is not modified. Skipping judge." | tee judge_detail.txt
+          echo "SKIPPED" > result.txt
+
       - name: Compile solution
+        if: steps.edited.outputs.edited == 'true'
         id: compile
         shell: bash
         run: |
@@ -37,6 +57,7 @@ jobs:
           fi
 
       - name: Run judge
+        if: steps.edited.outputs.edited == 'true'
         if: steps.compile.outcome == 'success'
         shell: bash
         run: |
