@@ -1,1 +1,1 @@
-solution.cpp is not modified. Skipping judge.
+Case 1: AC, time=0.000s, memory=3488KB
