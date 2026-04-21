@@ -213,7 +213,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          UPSTREAM_REPO: ORIGINAL_OWNER/00000
+          UPSTREAM_REPO: ORIGINAL_OWNER/hello-world-oj
           UPSTREAM_BASE_BRANCH: submissions
         run: |
           set -euo pipefail
@@ -233,20 +233,37 @@ jobs:
           SOURCE_FILE="solution.cpp"
           SOURCE_SHA256=$(sha256sum "$SOURCE_FILE" | awk '{print $1}')
 
+          export USER_NAME FORK_REPO FORK_BRANCH COMMIT_SHA SOURCE_FILE SOURCE_SHA256 SUBMITTED_AT
+
           mkdir -p records
-          cat > "records/${USER_NAME}.json" <<EOF
-{
-  "user": "${USER_NAME}",
-  "repo": "${FORK_REPO}",
-  "branch": "${FORK_BRANCH}",
-  "commit": "${COMMIT_SHA}",
-  "language": "cpp",
-  "source_file": "${SOURCE_FILE}",
-  "source_sha256": "${SOURCE_SHA256}",
-  "result": "AC",
-  "submitted_at": "${SUBMITTED_AT}"
+          python3 - <<'PY'
+import json
+import os
+
+user_name = os.environ["USER_NAME"]
+fork_repo = os.environ["FORK_REPO"]
+fork_branch = os.environ["FORK_BRANCH"]
+commit_sha = os.environ["COMMIT_SHA"]
+source_file = os.environ["SOURCE_FILE"]
+source_sha256 = os.environ["SOURCE_SHA256"]
+submitted_at = os.environ["SUBMITTED_AT"]
+
+data = {
+    "user": user_name,
+    "repo": fork_repo,
+    "branch": fork_branch,
+    "commit": commit_sha,
+    "language": "cpp",
+    "source_file": source_file,
+    "source_sha256": source_sha256,
+    "result": "AC",
+    "submitted_at": submitted_at,
 }
-EOF
+
+with open(f"records/{user_name}.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+    f.write("\n")
+PY
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -276,8 +293,7 @@ EOF
               --base "${UPSTREAM_BASE_BRANCH}" \
               --head "${USER_NAME}:${BRANCH_NAME}" \
               --title "AC record: ${USER_NAME}" \
-              --body "$(cat <<EOF
-This PR was created automatically after an AC result on public tests.
+              --body "This PR was created automatically after an AC result on public tests.
 
 - User: ${USER_NAME}
 - Fork repo: ${FORK_REPO}
@@ -288,9 +304,7 @@ This PR was created automatically after an AC result on public tests.
 - Source sha256: ${SOURCE_SHA256}
 - Run: ${GITHUB_SERVER_URL}/${FORK_REPO}/actions/runs/${GITHUB_RUN_ID}
 
-Base branch: ${UPSTREAM_BASE_BRANCH}
-EOF
-)"
+Base branch: ${UPSTREAM_BASE_BRANCH}"
           else
             echo "PR already exists for ${USER_NAME}:${BRANCH_NAME} -> ${UPSTREAM_BASE_BRANCH}. Updated branch only."
           fi
